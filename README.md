@@ -1,2 +1,2 @@
 # Javascript Notes
-Unnecessarily detailed notes from Douglas Crockford's _Javascript: The Good Parts_
+Some notes from Douglas Crockford's _Javascript: The Good Parts_
