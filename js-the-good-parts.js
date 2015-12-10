@@ -179,7 +179,6 @@ console.log(inc(12)); // --> 13
 //   /  |/  /__ __ _  ___  (_)__ ___ _/ /_(_)__  ___
 //  / /|_/ / -_)  ' \/ _ \/ /_ // _ `/ __/ / _ \/ _ \
 // /_/  /_/\__/_/_/_/\___/_//__/\_,_/\__/_/\___/_//_/
-//
 
 
 // Here's a fibonacci example...
@@ -232,3 +231,214 @@ var another_fib = memoizer([0, 1], function (fib, n) {
 for (var i = 0; i < 10; ++i) {
 	console.log(another_fib(i));
 }
+
+
+//    ________                __               ______
+//   / ____/ /_  ____ _____  / /____  _____   / ____/
+//  / /   / __ \/ __ `/ __ \/ __/ _ \/ ___/  /___ \(_)
+// / /___/ / / / /_/ / /_/ / /_/  __/ /     ____/ /
+// \____/_/ /_/\__,_/ .___/\__/\___/_/     /_____(_)
+//     ____      __/_/           _ __
+//    /  _/___  / /_  ___  _____(_) /_____ _____  ________
+//    / // __ \/ __ \/ _ \/ ___/ / __/ __ `/ __ \/ ___/ _ \
+//  _/ // / / / / / /  __/ /  / / /_/ /_/ / / / / /__/  __/
+// /___/_/ /_/_/ /_/\___/_/  /_/\__/\__,_/_/ /_/\___/\___/
+
+
+//    ___                  __         __             _          __
+//   / _ \___ ___ __ _____/ /__  ____/ /__ ____ ___ (_)______ _/ /
+//  / ___(_-</ -_) // / _  / _ \/ __/ / _ `(_-<(_-</ / __/ _ `/ /
+// /_/  /___/\__/\_,_/\_,_/\___/\__/_/\_,_/___/___/_/\__/\_,_/_/
+
+// This is less relevant since ES6 supports a "class" keyword that
+// does all of this for you, but whatever...
+
+// My modified version of Crockford's method for pseudoclassical inheritance.
+Function.prototype.inherits = function (Parent) {
+	this.prototype = Object.create(Parent.prototype);
+	this.prototype.constructor = this;
+	return this;
+};
+
+// Here's an example of it in action...
+
+// Mammal class, will serve as parent
+var Mammal = function (species) {
+	this.species = species || 'unknown';
+	this.region = 'unkown';
+};
+
+Mammal.prototype.says = function () {
+	return this.species + ' some unkown sounds.';
+};
+
+// Ocelot class, will serve as child
+var Ocelot = function () {
+	Mammal.call(this, 'Ocelot');
+	this.region = 'South America';
+}.inherits(Mammal);
+
+Ocelot.prototype.says = function () {
+	return this.species + ' makes alien guttural hissing noises...';
+};
+
+console.log(new Mammal().says());
+console.log(new Ocelot().says());
+
+
+// Although I like how consice this method is, there's something
+// about seeing a parent constructor (super) before seeing the
+// inheritance declaration that bugs me...
+// Here's another method with less elegant syntax, but immediately
+// shows the reader the parent class.
+
+function inherits (Parent, Child) {
+	Child.prototype = Object.create(Parent.prototype);
+	Child.prototype.constructor = Child;
+	return Child;
+}
+
+var PolarBear = inherits(Mammal, function () {
+	Mammal.call(this, 'Polar Bear');
+	this.region = 'Arctic Circle';
+});
+
+PolarBear.prototype.says = function () {
+	return this.species + ' growls!';
+};
+
+console.log(new PolarBear().says());
+
+
+//    ________                __               _____
+//   / ____/ /_  ____ _____  / /____  _____   /__  /
+//  / /   / __ \/ __ `/ __ \/ __/ _ \/ ___/     / (_)
+// / /___/ / / / /_/ / /_/ / /_/  __/ /        / /
+// \_______ /_/\__,_/ .___/\_______/_/        /_(_)
+//    / __ \___  __///___  __/ /___ ______
+//   / /_/ / _ \/ __ `/ / / / / __ `/ ___/
+//  / _, _/  __/ /_/ / /_/ / / /_/ / /
+// /_/ ||||||_/\__, /\__,_/_/\__,_/_/       _
+//    / ____/ /______  ________  __________(_)___  ____  _____
+//   / __/ | |/_/ __ \/ ___/ _ \/ ___/ ___/ / __ \/ __ \/ ___/
+//  / /____>  </ /_/ / /  /  __(__  |__  ) / /_/ / / / (__  )
+// /_____/_/|_/ .___/_/   \___/____/____/_/\____/_/ /_/____/
+//           /_/
+
+
+// In JS, regular expressions are more significantly more efficient
+// than other types of pattern matching string operations.
+
+
+//    ____                     __
+//   / __/_ _____ ___ _  ___  / /__ ___
+//  / _/ \ \ / _ `/  ' \/ _ \/ / -_|_-<
+// /___//_\_\\_,_/_/_/_/ .__/_/\__/___/
+//                    /_/
+
+
+// Parse url...
+var parse_url = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+
+var url = 'http://www.ora.com:80/goodparts?q#fragment';
+
+var result = parse_url.exec(url);
+
+var parts = [
+	'url', 'scheme', 'slash', 'host',
+	'port', 'path', 'query', 'hash'
+];
+
+for (var i = 0; i < parts.length; ++i) {
+	console.log(parts[i] + ':\t' + result[i]);
+}
+
+
+// Parse number...
+var parse_number = /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i;
+
+parse_number.test('1'); // --------------> true
+parse_number.test('number'); // ---------> false
+parse_number.test('98.6'); // -----------> true
+parse_number.test('132.21.86.100'); // --> false
+parse_number.test('123.45E-67'); // -----> true
+parse_number.test('123/45D-67'); // -----> false
+
+
+//    ______
+//   / __/ /__ ____ ____
+//  / _// / _ `/ _ `(_-<
+// /_/ /_/\_,_/\_, /___/
+//            /___/
+
+
+// g => global, can matches multiple times
+// i => insensitive, ingore character case
+// m => multiline, ^ and $ can match line-ending characters
+
+
+//   _____
+//  / ___/______  __ _____  ___
+// / (_ / __/ _ \/ // / _ \(_-<
+// \___/_/  \___/\_,_/ .__/___/
+//                  /_/
+
+
+// Capturing a group is a regexp "choice" wrapped in parentheses.
+// For example, this choice from the the parse_url regexp:
+//     (?:([A-Za-z]+)
+// The characters that satisfy that regular expression will be
+// "captured", meaning they will be added to a resultant array
+// holding each captured group. In the same parse_url example,
+// we stored that array as "result", and later displayed it.
+
+
+//   ____                 __  _ ____
+//  / __ \__ _____ ____  / /_(_) _(_)__ _______
+// / /_/ / // / _ `/ _ \/ __/ / _/ / -_) __(_-<
+// \___\_\_,_/\_,_/_//_/\__/_/_//_/\__/_/ /___/
+
+
+// You can specify how many times a pattern should match.
+// For example:
+var thisRegexp = /www/; // ----> "www"
+var isTheSameAs = /w{3}/; // --> "www"
+
+// Also, you can specify a valid range for the number of
+// times a pattern should match.
+// For example:
+var betweenFourAndTenWs = /w{4,10}/;
+
+// Or, just a minimum number of matches...
+var atLeastSixWs = /w{6,}/;
+
+// Note: Unsure whether {,6} is a valid "no more than 6"
+// quantifier. I should play with this.
+
+
+//     ___                               ___         ___       ___
+//    /   |  ____  ____  ___  ____  ____/ (_)  __   /   |     ( _ )
+//   / /| | / __ \/ __ \/ _ \/ __ \/ __  / / |/_/  / /| |    / __ \/|
+//  / ___ |/ /_/ / /_/ /  __/ / / / /_/ / />  <   / ___ |   / /_/  <
+// /_/  |_/ .___/ .___/\___/_/ /_/\__,_/_/_/|_|  /_/  |_|   \____/\/
+//     __/_/   /_/                       ___         ____
+//    /   |  ____  ____  ___  ____  ____/ (_)  __   / __ )_
+//   / /| | / __ \/ __ \/ _ \/ __ \/ __  / / |/_/  / __  (_)
+//  / ___ |/ /_/ / /_/ /  __/ / / / /_/ / />  <   / /_/ /
+// /_/  |_/ .___/ .___/\___/_/ /_/\__,_/_/_/|_|  /_____(_)
+//   ____///_  /_/       ___           ____      __   ____             __
+//  /_  __/ /_  ___     /   |_      __/ __/_  __/ /  / __ \____ ______/ /______
+//   / / / __ \/ _ \   / /| | | /| / / /_/ / / / /  / /_/ / __ `/ ___/ __/ ___/
+//  / / / / / /  __/  / ___ | |/ |/ / __/ /_/ / /  / ____/ /_/ / /  / /_(__  )
+// /_/_///_///\___/  /_/ _///__/|__/_/  \//,_///__/_/    \__,_///   \__/____( )
+//  /_  __/ /_  ___     / __ )____ _____/ /  / __ \____ ______/ /______     |/
+//   / / / __ \/ _ \   / __  / __ `/ __  /  / /_/ / __ `/ ___/ __/ ___/
+//  / / / / / /  __/  / /_/ / /_/ / /_/ /  / ____/ /_/ / /  / /_(__  )
+// /_/ /_/ /_/\___/  /_____/\__,_/\__,_/  /_/    \__,_/_/   \__/____/
+
+
+// This section outlines some of Javascripts strange behaviors.
+// I won't be writing them down because I either already know them
+// well, or they're features infamous enough to know never to use.
+
+// fin
