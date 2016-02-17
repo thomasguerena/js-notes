@@ -1,2 +1,3 @@
-# Javascript Notes
-Some notes from Douglas Crockford's _Javascript: The Good Parts_
+# Javascript Notes, from...
+- Douglas Crockford's _Javascript: The Good Parts_
+- Redux JS
